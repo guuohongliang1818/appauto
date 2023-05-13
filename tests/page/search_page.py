@@ -20,11 +20,11 @@ class SearchPage:
         query = self.driver.find_element(By.CSS_SELECTOR, "input.search-query")
         query.clear()
         query.send_keys(keyword)
-        self.driver.find_element(By.CSS_SELECTOR, ".btn-primary.search-cta").click()
         return self
 
     # 获取返回结果
     def get_search_result(self):
+        self.driver.find_element(By.CSS_SELECTOR, ".btn-primary.search-cta").click()
         WebDriverWait(self.driver, 20).until(
             expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".topic-title")))
         print(self.driver.find_elements(By.CSS_SELECTOR, ".topic-title"))
