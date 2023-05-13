@@ -14,7 +14,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 class TestSearch1():
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
-        # 隐式等待5秒钟
+        # 隐式等待5秒钟，轮训查找（默认0.5秒）元素是否出现，如果在5秒内没有出现就会抛出异常
         # self.driver.implicitly_wait(5)
         self.vars = {}
 
@@ -41,6 +41,11 @@ class TestSearch1():
             no such element: Unable to locate element，在这里需要隐式等待或显示等待，等待查询结果出来后记性查看具体每一条的详情
         """
         # self.driver.find_element(By.CSS_SELECTOR, ".topic-title").click()
-        self.driver.implicitly_wait(5)
-        print("接口返回内容", self.driver.find_element(By.CSS_SELECTOR, ".topic-title").text.lower())
+        # self.driver.implicitly_wait(5)
+        # 显示等待
+        WebDriverWait(self.driver, 20).until(
+            expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, ".topic-title")))
+        titles = []
+        for element in self.driver.find_elements(By.CSS_SELECTOR, ".topic-title"):
+            titles.append(element.text)
         assert "selenium" in self.driver.find_element(By.CSS_SELECTOR, ".topic-title").text.lower()
