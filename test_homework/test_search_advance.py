@@ -32,8 +32,8 @@ class TestSearchAdvance:
     def test_category_search(self, select_type, category_type):
         if select_type == 1:
             # 获取话题帖子选项
-            assert self.search_advance.category_search(select_type, category_type).goto_topic_posts_search()
+            assert self.search_advance.category_search(category_type).goto_topic_posts_search()
         elif select_type == 2:
-            assert self.search_advance.category_search(select_type, category_type).goto_category_tag_search()
+            assert self.search_advance.category_search(category_type).goto_category_tag_search()
         elif select_type == 3:
-            assert self.search_advance.category_search(select_type, category_type).goto_username_search()
+            assert self.search_advance.category_search(category_type).goto_username_search()

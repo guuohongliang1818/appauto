@@ -42,7 +42,7 @@ class SearchAdvance:
             print("NoSuchElementException", e)
             self.driver.find_element(By.XPATH, "//*[text()='高级筛选器']").click()
 
-    def category_search(self, select_type, category_type):
+    def category_search(self, category_type):
         self.click_advance_selector()
         # 清空搜索框中的内容
         query = self.driver.find_element(By.CSS_SELECTOR, ".search-query")
