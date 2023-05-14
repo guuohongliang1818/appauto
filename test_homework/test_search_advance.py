@@ -14,17 +14,26 @@ class TestSearchAdvance:
 
     @pytest.mark.parametrize("keyword", ["selenium", "appium", "自动化"])
     def test_keyword(self, keyword):
-        assert keyword in str(self.search_advance.keyword_search(keyword).get_topic_result()[0]).lower()
+        assert keyword in str(self.search_advance.keyword_search(keyword).goto_topic_posts_search()[0]).lower()
 
     @pytest.mark.parametrize("keyword", ["selenium", "appium", "自动化"])
     @pytest.mark.parametrize("select_type", [1, 2, 3])
     def test_select(self, keyword, select_type):
-        # print("=========", self.search_advance.select_search(keyword, select_type))
-        result = self.search_advance.select_search(keyword, select_type)
-        assert result
+        if select_type == 1:
+            # 获取话题帖子选项
+            assert self.search_advance.keyword_search(keyword).goto_topic_posts_search()
+        elif select_type == 2:
+            assert self.search_advance.keyword_search(keyword).goto_category_tag_search()
+        elif select_type == 3:
+            assert self.search_advance.keyword_search(keyword).goto_username_search()
 
     @pytest.mark.parametrize("select_type", [1, 2, 3])
     @pytest.mark.parametrize("category_type", range(2, 9))
     def test_category_search(self, select_type, category_type):
-        # print("=========", self.search_advance.select_search(keyword, select_type))
-        assert self.search_advance.category_search(select_type, category_type)
+        if select_type == 1:
+            # 获取话题帖子选项
+            assert self.search_advance.category_search(select_type, category_type).goto_topic_posts_search()
+        elif select_type == 2:
+            assert self.search_advance.category_search(select_type, category_type).goto_category_tag_search()
+        elif select_type == 3:
+            assert self.search_advance.category_search(select_type, category_type).goto_username_search()

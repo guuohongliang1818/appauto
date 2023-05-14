@@ -10,7 +10,7 @@ class MainPage:
     pass
 
     def __init__(self):
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Edge()
         self.driver.get("https://ceshiren.com/")
         self.driver.set_window_size(1056, 814)
 
