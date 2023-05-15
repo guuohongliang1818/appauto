@@ -70,6 +70,34 @@ class TestSearchAdvance:
             assert self.search_advance.category_search(category_type).topic_status_search(
                 top_status_type).goto_username_search().usernames
 
-    @pytest.mark.parametrize("own_tag", range(2, 7))
-    def test_own_tag_search(self, own_tag):
-        self.search_advance.own_tag_search(own_tag).get_keyword()
+    @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
+    @pytest.mark.parametrize("own_tag", range(1, 7))
+    @allure.title("高级：拥有该标签-(话题/类别/用户)")
+    def test_own_tag_search(self, select_type, own_tag):
+        if select_type == 1:
+            # 获取话题帖子选项
+            assert self.search_advance.own_tag_search(own_tag).goto_topic_posts_search().topics
+        elif select_type == 2:
+            assert self.search_advance.own_tag_search(own_tag).goto_category_tag_search().categories
+        elif select_type == 3:
+            assert self.search_advance.own_tag_search(own_tag).goto_username_search().usernames
+
+    @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
+    @pytest.mark.parametrize("category_type", range(1, 9))
+    @pytest.mark.parametrize("top_status_type", range(1, 7))
+    @pytest.mark.parametrize("own_tag", range(1, 7))
+    def test_category_topic_status_own_tag_search(self, select_type, category_type, top_status_type, own_tag):
+        if select_type == 1:
+            # 获取话题帖子选项
+            assert self.search_advance.category_search(category_type).topic_status_search(
+                top_status_type).own_tag_search(own_tag).goto_topic_posts_search().topics
+        elif select_type == 2:
+            assert self.search_advance.category_search(category_type).topic_status_search(
+                top_status_type).own_tag_search(own_tag).goto_category_tag_search().categories
+        elif select_type == 3:
+            assert self.search_advance.category_search(category_type).topic_status_search(
+                top_status_type).own_tag_search(own_tag).goto_username_search().usernames
+
+    @pytest.mark.parametrize("own_tag", range(1, 7))
+    def test_own_tag(self, own_tag):
+        self.search_advance.own_tag_search(own_tag)
