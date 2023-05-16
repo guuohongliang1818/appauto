@@ -44,7 +44,7 @@ class SearchAdvance:
     def click_advance_selector(self):
         try:
             self.driver.find_element(By.XPATH, "//details[@open]")
-        except NoSuchElementException as e:
+        except BaseException as e:
             # print("NoSuchElementException", e)
             self.driver.find_element(By.XPATH, "//*[text()='高级筛选器']").click()
 
@@ -56,7 +56,7 @@ class SearchAdvance:
             self.driver.find_element(By.XPATH,
                                      "//summary[@id='search-in-category-header']" +
                                      "/div[@class='select-kit-header-wrapper']/button").click()
-        except NoSuchElementException as e:
+        except BaseException as e:
             pass
 
         self.driver.find_element(By.XPATH, "//summary[@id='search-in-category-header']").click()
@@ -73,7 +73,7 @@ class SearchAdvance:
             self.driver.find_element(By.XPATH,
                                      "//summary[@id='search-status-options-header']" +
                                      "/div[@class='select-kit-header-wrapper']/button").click()
-        except NoSuchElementException as e:
+        except BaseException as e:
             pass
         self.driver.find_element(By.XPATH, "//summary[@id='search-status-options-header']").click()
         self.driver.find_element(By.XPATH,
@@ -90,15 +90,13 @@ class SearchAdvance:
         while True:
             try:
                 # 循环删除被选中的元素，从头开始删除，如果找不到元素，说明已被全部删除，捕获异常跳出循环
-                self.driver.find_element(By.XPATH, "//div[@class='selected-content']/button[1]").click()
-            except NoSuchElementException as e:
+                self.driver.find_element(By.XPATH, "//div[@id='search-with-tags-body']"
+                                                   "/div[@class='selected-content']/button[1]").click()
+            except BaseException as e:
                 # print("===异常===", e)
                 break
 
         for i in range(1, count + 1):
-            # WebDriverWait(self.driver, 20).until(
-            #     expected_conditions.visibility_of_element_located(
-            #         (By.XPATH, "//div[@id='search-with-tags-body']/ul")))
             self.web_driver_wait_xpath("//div[@id='search-with-tags-body']" +
                                        "/ul[@class='select-kit-collection']/li[1]")
             self.driver.find_element(By.XPATH,
@@ -107,20 +105,71 @@ class SearchAdvance:
         return self
 
     # 高级筛选器：发帖人
-    def post_person_search(self):
+    def post_person_search(self, post_person):
+        # 弹出搜索框
+        self.click_advance_selector()
         self.driver.find_element(By.XPATH, "//summary[@id='search-posted-by-header']").click()
-        self.driver.find_element(By.XPATH, "//input[@name='filter-input-search']").send_keys("张三")
-        self.web_driver_wait_xpath("//div[@id='search-posted-by-body']/ul[@class='select-kit-collection']/li")
+
+        # 如果有，清空之前所选的元素
+        try:
+            self.driver.find_element(By.XPATH,
+                                     "//div[@id='search-posted-by-body']" +
+                                     "/div[@class='selected-content']/button").click()
+        except BaseException as e:
+            pass
+        for person in post_person:
+            try:
+                # 先清空之前填的内容
+                search_word = self.driver.find_element(By.XPATH, "//input[@name='filter-input-search']")
+                search_word.clear()
+                # 输入内容
+                search_word.send_keys(person)
+                # 获取查询结果
+                self.web_driver_wait_xpath("//div[@id='search-posted-by-body']/ul[@class='select-kit-collection']/li "
+                                           " | //span[@class='no-content']")
+                # 如果有下拉，获取第一个，没有下拉，则抛出异常，继续查询
+                self.driver.find_element(By.XPATH,
+                                         "//div[@id='search-posted-by-body']" +
+                                         "/ul[@class='select-kit-collection']/li[1]").click()
+                break
+            except BaseException as e:
+                # print("BaseException", e)
+                continue
+
+        return self
 
     # 高级筛选器：只返回
-    def only_back_search(self):
-        pass
+    def only_back_search(self, only_back_type):
+        self.click_advance_selector()
+        try:
+            self.driver.find_element(By.XPATH,
+                                     "//summary[@id='in-header']" +
+                                     "/div[@class='select-kit-header-wrapper']/button").click()
+        except NoSuchElementException as e:
+            pass
 
-    def mutil_search(self):
-        pass
+        self.driver.find_element(By.XPATH, "//summary[@id='in-header']").click()
+        self.driver.find_element(By.XPATH, "//div[@id='in-body']/ul[@class='select-kit-collection']/li[" + str(
+            only_back_type) + "]").click()
+        return self
+
+    def early_late(self):
+
+        button = self.driver.find_element(By.XPATH, "//summary[@id='postTime-header']")
+        value = button.get_attribute("data-value")
+        button.click()
+        print("===value===", value)
+        if value == "before":
+            self.driver.find_element(By.XPATH, "//div[@id='postTime-body']/ul/li[@data-value='after']").click()
+        else:
+            self.driver.find_element(By.XPATH, "//div[@id='postTime-body']/ul/li[@data-value='before']").click()
 
     def date_search(self):
-        pass
+        # 打开高级筛选框
+        self.click_advance_selector()
+        self.early_late()
+
+        return self
 
     def get_search_result(self):
         # 点击搜索按钮
@@ -129,10 +178,12 @@ class SearchAdvance:
         result_path = "//span[@class='topic-title'] " \
                       "| //span[@class='category-name'] | //a[starts-with(@href,'/tag')] " \
                       "| //span[@class='username'] " \
-                      "| //h3[text()='找不到结果。']"
+                      "| //h3[text()='找不到结果。']" \
+                      "| //div[text()='您的搜索词过短。']"
         result_xpath1 = "//span[@class='topic-title' or @class='category-name' or @class='username'] " \
                         "| //a[starts-with(@href,'/tag')] " \
-                        "| //h3[text()='找不到结果。']"
+                        "| //h3[text()='找不到结果。']" \
+                        "| //div[text()='您的搜索词过短。']"
         # self.web_driver_wait_xpath(result_path)
         WebDriverWait(self.driver, 20).until(
             expected_conditions.visibility_of_any_elements_located((By.XPATH, result_path)))

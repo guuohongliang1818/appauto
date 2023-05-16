@@ -65,10 +65,21 @@ class TestSearchAdvance:
     @pytest.mark.parametrize("category_type", range(1, 9))
     @pytest.mark.parametrize("top_status_type", range(1, 7))
     @pytest.mark.parametrize("own_tag", range(1, 7))
+    @allure.title("高级：分类，话题状态，拥有该标签-(话题/类别/用户)")
     def test_category_topic_status_own_tag_search(self, select_type, category_type, top_status_type, own_tag):
         assert self.search_advance.category_search(category_type).topic_status_search(
             top_status_type).own_tag_search(own_tag).select_type_search(select_type).get_search_result().search_result
 
-    @pytest.mark.parametrize("own_tag", range(1, 7))
-    def test_own_tag(self, own_tag):
-        self.search_advance.own_tag_search(own_tag)
+    @pytest.mark.parametrize("only_back_type", range(1, 5))
+    @allure.title("高级：只返回-(话题)")
+    def test_only_back_search(self, only_back_type):
+        self.search_advance.only_back_search(only_back_type).get_search_result()
+
+    @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
+    @pytest.mark.parametrize("post_person", [["bbbbbbb", "张三"], ["dddd", "ccccc", "王五"]])
+    @allure.title("高级：发帖人-(话题/类别/用户)")
+    def test_post_person_search(self, post_person, select_type):
+        self.search_advance.post_person_search(post_person).select_type_search(select_type).get_search_result()
+
+    def test_date_search(self):
+        self.search_advance.date_search().get_keyword()
