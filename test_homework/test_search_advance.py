@@ -7,7 +7,7 @@ from src.pages.main_page import MainPage
 
 """
 请老师帮忙看一下如下的两个问题：
-问题1：点击搜索按钮获取查询结果的方法get_search_result()比较慢，
+问题1：点击搜索按钮获取查询结果的方法get_search_result()比较慢，查询结果早已返回。但是代码获取元素很慢
 问题2：该方法get_search_result()的返回结果中.text后会有空字符串；比如测试用例test_category_search()
 """
 
