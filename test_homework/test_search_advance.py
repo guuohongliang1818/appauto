@@ -5,6 +5,12 @@ import pytest
 
 from src.pages.main_page import MainPage
 
+"""
+请老师帮忙看一下如下的两个问题：
+问题1：点击搜索按钮获取查询结果的方法get_search_result()比较慢，
+问题2：该方法get_search_result()的返回结果中.text后会有空字符串；比如测试用例test_category_search()
+"""
+
 
 class TestSearchAdvance:
     def setup_class(self):
@@ -16,87 +22,52 @@ class TestSearchAdvance:
     @pytest.mark.parametrize("keyword", ["selenium", "appium", "自动化"])
     @allure.title("(关键字)-(话题)")
     def test_keyword(self, keyword):
-        assert keyword in str(self.search_advance.keyword_search(keyword).goto_topic_posts_search().topics[0]).lower()
+        assert keyword in str(
+            self.search_advance.keyword_search(keyword).select_type_search(1).get_search_result().search_result[0])
 
     @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
     @pytest.mark.parametrize("keyword", ["selenium", "appium", "自动化"])
     @allure.title("(关键字)-(话题/类别/用户)")
     def test_select(self, keyword, select_type):
-        if select_type == 1:
-            # 获取话题帖子选项
-            assert self.search_advance.keyword_search(keyword).goto_topic_posts_search().topics
-        elif select_type == 2:
-            assert self.search_advance.keyword_search(keyword).goto_category_tag_search().categories
-        elif select_type == 3:
-            assert self.search_advance.keyword_search(keyword).goto_username_search().usernames
+        assert self.search_advance.keyword_search(keyword).select_type_search(
+            select_type).get_search_result().search_result
 
     @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
     @pytest.mark.parametrize("category_type", range(1, 9))
     @allure.title("(高级：分类)-(话题/类别/用户)")
     def test_category_search(self, select_type, category_type):
-        if select_type == 1:
-            # 获取话题帖子选项
-            assert self.search_advance.category_search(category_type).goto_topic_posts_search().topics
-        elif select_type == 2:
-            assert self.search_advance.category_search(category_type).goto_category_tag_search().categories
-        elif select_type == 3:
-            assert self.search_advance.category_search(category_type).goto_username_search().usernames
+        assert self.search_advance.category_search(category_type).select_type_search(
+            select_type).get_search_result().search_result
 
     @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
     @pytest.mark.parametrize("top_status_type", range(1, 7))
     @allure.title("高级：话题-(话题/类别/用户)")
     def test_topic_status_search(self, select_type, top_status_type):
-        if select_type == 1:
-            # 获取话题帖子选项
-            assert self.search_advance.topic_status_search(top_status_type).goto_topic_posts_search().topics
-        elif select_type == 2:
-            assert self.search_advance.topic_status_search(top_status_type).goto_category_tag_search().categories
-        elif select_type == 3:
-            assert self.search_advance.topic_status_search(top_status_type).goto_username_search().usernames
+        assert self.search_advance.topic_status_search(top_status_type).select_type_search(
+            select_type).get_search_result().search_result
 
     @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
     @pytest.mark.parametrize("category_type", range(1, 9))
     @pytest.mark.parametrize("top_status_type", range(1, 7))
     @allure.title("高级：分类+话题-(话题/类别/用户)")
     def test_category_topic_status_search(self, select_type, category_type, top_status_type):
-        if select_type == 1:
-            # 获取话题帖子选项
-            assert self.search_advance.category_search(category_type).topic_status_search(
-                top_status_type).goto_topic_posts_search().topics
-        elif select_type == 2:
-            assert self.search_advance.category_search(category_type).topic_status_search(
-                top_status_type).goto_category_tag_search().categories
-        elif select_type == 3:
-            assert self.search_advance.category_search(category_type).topic_status_search(
-                top_status_type).goto_username_search().usernames
+        assert self.search_advance.category_search(category_type).topic_status_search(
+            top_status_type).select_type_search(select_type).get_search_result().search_result
 
     @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
     @pytest.mark.parametrize("own_tag", range(1, 7))
     @allure.title("高级：拥有该标签-(话题/类别/用户)")
     def test_own_tag_search(self, select_type, own_tag):
-        if select_type == 1:
-            # 获取话题帖子选项
-            assert self.search_advance.own_tag_search(own_tag).goto_topic_posts_search().topics
-        elif select_type == 2:
-            assert self.search_advance.own_tag_search(own_tag).goto_category_tag_search().categories
-        elif select_type == 3:
-            assert self.search_advance.own_tag_search(own_tag).goto_username_search().usernames
+        assert self.search_advance.own_tag_search(own_tag).select_type_search(
+            select_type).get_search_result().search_result
 
     @pytest.mark.parametrize("select_type", [1, 2, 3], ids=["话题/帖子", "类别/标签", "用户"])
     @pytest.mark.parametrize("category_type", range(1, 9))
     @pytest.mark.parametrize("top_status_type", range(1, 7))
     @pytest.mark.parametrize("own_tag", range(1, 7))
     def test_category_topic_status_own_tag_search(self, select_type, category_type, top_status_type, own_tag):
-        if select_type == 1:
-            # 获取话题帖子选项
-            assert self.search_advance.category_search(category_type).topic_status_search(
-                top_status_type).own_tag_search(own_tag).goto_topic_posts_search().topics
-        elif select_type == 2:
-            assert self.search_advance.category_search(category_type).topic_status_search(
-                top_status_type).own_tag_search(own_tag).goto_category_tag_search().categories
-        elif select_type == 3:
-            assert self.search_advance.category_search(category_type).topic_status_search(
-                top_status_type).own_tag_search(own_tag).goto_username_search().usernames
+        assert self.search_advance.category_search(category_type).topic_status_search(
+            top_status_type).own_tag_search(own_tag).select_type_search(select_type).get_search_result().search_result
 
     @pytest.mark.parametrize("own_tag", range(1, 7))
     def test_own_tag(self, own_tag):
