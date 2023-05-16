@@ -112,6 +112,10 @@ class SearchAdvance:
         self.driver.find_element(By.XPATH, "//input[@name='filter-input-search']").send_keys("张三")
         self.web_driver_wait_xpath("//div[@id='search-posted-by-body']/ul[@class='select-kit-collection']/li")
 
+    # 高级筛选器：只返回
+    def only_back_search(self):
+        pass
+
     def mutil_search(self):
         pass
 
