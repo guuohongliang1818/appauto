@@ -106,8 +106,9 @@ class SearchAdvance:
 
     # 高级筛选器：发帖人
     def post_person_search(self, post_person):
-        # 弹出搜索框
+
         self.click_advance_selector()
+        # 弹出搜索框
         self.driver.find_element(By.XPATH, "//summary[@id='search-posted-by-header']").click()
 
         # 如果有，清空之前所选的元素
@@ -145,7 +146,7 @@ class SearchAdvance:
             self.driver.find_element(By.XPATH,
                                      "//summary[@id='in-header']" +
                                      "/div[@class='select-kit-header-wrapper']/button").click()
-        except NoSuchElementException as e:
+        except BaseException as e:
             pass
 
         self.driver.find_element(By.XPATH, "//summary[@id='in-header']").click()
@@ -153,6 +154,7 @@ class SearchAdvance:
             only_back_type) + "]").click()
         return self
 
+    # 高级筛选器：早于，晚于
     def early_late(self):
 
         button = self.driver.find_element(By.XPATH, "//summary[@id='postTime-header']")
@@ -164,6 +166,7 @@ class SearchAdvance:
         else:
             self.driver.find_element(By.XPATH, "//div[@id='postTime-body']/ul/li[@data-value='before']").click()
 
+    # 高级筛选器：日期查询
     def date_search(self):
         # 打开高级筛选框
         self.click_advance_selector()
