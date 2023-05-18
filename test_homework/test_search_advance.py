@@ -9,6 +9,7 @@ from src.pages.main_page import MainPage
 注意:测试PO的地址链接为
 1.https://github.com/guuohongliang1818/appauto/blob/master/src/pages/main_page.py
 2.https://github.com/guuohongliang1818/appauto/blob/master/src/pages/search_advance.py
+
 """
 
 
