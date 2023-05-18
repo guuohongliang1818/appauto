@@ -23,6 +23,7 @@ class TestSearchAdvance:
     @pytest.mark.parametrize("keyword", ["selenium", "appium", "自动化"])
     @allure.title("(关键字)-(话题/类别/用户)")
     def test_select(self, keyword, select_type):
+        # 结果不为空断言为True
         assert bool(self.search_advance.keyword_search(keyword).select_type_search(
             select_type).get_search_result().search_result)
 
@@ -30,6 +31,7 @@ class TestSearchAdvance:
     @pytest.mark.parametrize("category_type", range(1, 6))
     @allure.title("(高级：分类)-(话题/类别/用户)")
     def test_category_search(self, select_type, category_type):
+        # 结果不为空断言为True
         assert bool(self.search_advance.category_search(category_type).select_type_search(
             select_type).get_search_result().search_result)
 
@@ -37,6 +39,7 @@ class TestSearchAdvance:
     @pytest.mark.parametrize("top_status_type", range(1, 4))
     @allure.title("高级：话题-(话题/类别/用户)")
     def test_topic_status_search(self, select_type, top_status_type):
+        # 结果不为空断言为True
         assert bool(self.search_advance.topic_status_search(top_status_type).select_type_search(
             select_type).get_search_result().search_result)
 
@@ -45,6 +48,7 @@ class TestSearchAdvance:
     @pytest.mark.parametrize("top_status_type", range(1, 4))
     @allure.title("高级：分类+话题-(话题/类别/用户)")
     def test_category_topic_status_search(self, select_type, category_type, top_status_type):
+        # 结果不为空断言为True
         assert bool(self.search_advance.category_search(category_type).topic_status_search(
             top_status_type).select_type_search(select_type).get_search_result().search_result)
 
@@ -84,6 +88,6 @@ class TestSearchAdvance:
     @pytest.mark.parametrize("date", ["0020230516", "0020220516", "0020221212", "0020231412"])
     @allure.title("高级：日期-(话题/类别/用户)")
     def test_date_search(self, select_type, date):
-        # 结果不为空为结果正常
+        # 结果不为空断言为True
         assert bool(
             self.search_advance.date_search(date).select_type_search(select_type).get_search_result().search_result)
