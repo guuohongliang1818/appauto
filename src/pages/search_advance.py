@@ -92,7 +92,7 @@ class SearchAdvance:
     def topic_status_search(self, top_status_type):
         self.click_advance_selector()
         try:
-            # 如果有可以x掉的元素,如果找不到可能会报错
+            # 如果有可以x掉的元素，如果找不到可能会报错
             self.driver.find_element(By.XPATH,
                                      "//summary[@id='search-status-options-header']" +
                                      "/div[@class='select-kit-header-wrapper']/button").click()
@@ -196,6 +196,7 @@ class SearchAdvance:
         self.early_late()
         i = self.driver.find_element(By.XPATH, "//input[@id='search-post-date']")
         i.clear()
+        # 日期控件有bug，目前日期输入格式为：0020230516
         i.send_keys(date)
         return self
 
@@ -219,13 +220,10 @@ class SearchAdvance:
             if "找不到结果。" == item.text or "您的搜索词过短。" == item.text:
                 continue
             self.search_result.append(item.text)
-        # print("result", result)
         print("search_result==", self.search_result)
-        # 打印出的search_result列表会有空字符串
-        # 例如['', '求助AppCrawler IOS XPATH中存在特殊属性@value=‘Password_#9; ’ 查找失败', '开源项目']
         return self
 
-    # 该方法已废弃
+    # 该方法已废弃，已更换为：get_search_result
     def goto_topic_posts_search(self):
         self.driver.find_element(By.XPATH, "//details[@id='search-type']").click()
         self.driver.find_element(By.CSS_SELECTOR, ".select-kit-collection>li[title='话题/帖子']").click()
@@ -242,7 +240,7 @@ class SearchAdvance:
         print("topics", self.topics)
         return self
 
-    # 该方法已废弃
+    # 该方法已废弃，已更换为：get_search_result
     def goto_category_tag_search(self):
         self.driver.find_element(By.XPATH, "//details[@id='search-type']").click()
         self.driver.find_element(By.CSS_SELECTOR, ".select-kit-collection>li[title='类别/标签']").click()
@@ -264,7 +262,7 @@ class SearchAdvance:
         print("categories", self.categories)
         return self
 
-    # 该方法已废弃
+    # 该方法已废弃，已更换为：get_search_result
     def goto_username_search(self):
         self.driver.find_element(By.XPATH, "//details[@id='search-type']").click()
         self.driver.find_element(By.CSS_SELECTOR, ".select-kit-collection>li[title='用户']").click()
@@ -281,12 +279,14 @@ class SearchAdvance:
         print("usernames", self.usernames)
         return self
 
+    # 该方法为测试输入框中的value值
     def get_keyword(self):
         values = self.driver.find_element(By.CSS_SELECTOR, ".search-query").get_attribute("value")
         print("=====values=====", values)
 
 
 if __name__ == '__main__':
-    lst = []
+    lst = [12, 2]
+    print("=====", bool(lst))
     lst.clear()
     print("=====", bool(lst))
