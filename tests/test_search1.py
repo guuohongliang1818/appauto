@@ -43,11 +43,3 @@ class TestSearch1():
         # todo:10.显示等待
 
         print("=====")
-
-    def test_date(self):
-        self.driver.get("C:/Users/guohongliang/Desktop/ceshi.html")
-        print("")
-        i = self.driver.find_element(By.XPATH, "//input[@type='date']")
-        i.clear()
-        i.send_keys("2023/12/12")
-        print("")

@@ -120,8 +120,9 @@ class SearchAdvance:
                 break
 
         for i in range(1, count + 1):
-            self.web_driver_wait_xpath("//div[@id='search-with-tags-body']" +
-                                       "/ul[@class='select-kit-collection']/li[1]")
+            WebDriverWait(self.driver, 20).until(
+                expected_conditions.element_to_be_clickable((By.XPATH, "//div[@id='search-with-tags-body']" +
+                                                             "/ul[@class='select-kit-collection']/li[1]")))
             self.driver.find_element(By.XPATH,
                                      "//div[@id='search-with-tags-body']" +
                                      "/ul[@class='select-kit-collection']/li[1]").click()
@@ -183,7 +184,6 @@ class SearchAdvance:
         button = self.driver.find_element(By.XPATH, "//summary[@id='postTime-header']")
         value = button.get_attribute("data-value")
         button.click()
-        print("===value===", value)
         if value == "before":
             self.driver.find_element(By.XPATH, "//div[@id='postTime-body']/ul/li[@data-value='after']").click()
         else:
@@ -207,21 +207,19 @@ class SearchAdvance:
         self.driver.find_element(By.CSS_SELECTOR, ".btn-primary.search-cta").click()
         # 话题帖子，类别/标签，用户的搜索结果
         result_path = "//span[@class='topic-title'] " \
-                      "| //span[@class='category-name'] | //a[starts-with(@href,'/tag')] " \
+                      "| //a[contains(@class,'fps-category-item')]/span/span[@class='category-name'] " \
+                      "| //div[@class='fps-tag-item']/a[starts-with(@href,'/tag')] " \
                       "| //span[@class='username'] " \
                       "| //h3[text()='找不到结果。']" \
                       "| //div[text()='您的搜索词过短。']"
-        conditions = ["//span[@class='topic-title']",
-                      "//span[@class='category-name'] | //a[starts-with(@href,'/tag')]",
-                      "//span[@class='username']",
-                      "//h3[text()='找不到结果。']",
-                      "//div[text()='您的搜索词过短。']"]
         # self.web_driver_wait_xpath(result_path)
         result = WebDriverWait(self.driver, 20).until(
-            expected_conditions.visibility_of_any_elements_located((By.XPATH, result_path)))
+            expected_conditions.visibility_of_element_located((By.XPATH, result_path)))
         for item in self.driver.find_elements(By.XPATH, result_path):
+            if "找不到结果。" == item.text or "您的搜索词过短。" == item.text:
+                continue
             self.search_result.append(item.text)
-        print("result", result)
+        # print("result", result)
         print("search_result==", self.search_result)
         # 打印出的search_result列表会有空字符串
         # 例如['', '求助AppCrawler IOS XPATH中存在特殊属性@value=‘Password_#9; ’ 查找失败', '开源项目']
