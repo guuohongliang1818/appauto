@@ -1,11 +1,27 @@
 # 姓名：郭宏亮
 # 时间：2023/5/13 16:48
+import datetime
+import time
+
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+
+
+def timer(func):
+    def inner(*args, **kwargs):
+        start_time = datetime.datetime.now()
+        print("开始时间：", start_time)
+        result = func(*args, **kwargs)
+        end_time = datetime.datetime.now()
+        print("结束时间：", end_time)
+        print("查询结果耗时：", (end_time - start_time))
+        return result
+
+    return inner
 
 
 class SearchAdvance:
@@ -33,6 +49,10 @@ class SearchAdvance:
     # 下拉切换-话题/帖子-类别/标签-用户搜索
     def select_type_search(self, select_type):
         self.driver.find_element(By.XPATH, "//summary[@id='search-type-header']").click()
+        WebDriverWait(self.driver, 20).until(
+            expected_conditions.element_to_be_clickable((By.XPATH, "//div[@id='search-type-body']" +
+                                                         "/ul[@class='select-kit-collection']/li[" +
+                                                         str(select_type) + "]")))
         self.driver.find_element(By.XPATH, "//div[@id='search-type-body']"
                                            "/ul[@class='select-kit-collection']/li[" + str(select_type) + "]").click()
         return self
@@ -43,11 +63,13 @@ class SearchAdvance:
 
     # 点击"高级筛选器"
     def click_advance_selector(self):
-        try:
-            self.driver.find_element(By.XPATH, "//details[@open]")
-        except BaseException as e:
-            # print("NoSuchElementException", e)
-            self.driver.find_element(By.XPATH, "//*[text()='高级筛选器']").click()
+        while True:
+            try:
+                self.driver.find_element(By.XPATH, "//details[@open]")
+                break
+            except BaseException as e:
+                # print("NoSuchElementException", e)
+                self.driver.find_element(By.XPATH, "//*[text()='高级筛选器']").click()
 
     # 高级筛选器：分类
     def category_search(self, category_type):
@@ -168,14 +190,19 @@ class SearchAdvance:
             self.driver.find_element(By.XPATH, "//div[@id='postTime-body']/ul/li[@data-value='before']").click()
 
     # 高级筛选器：日期查询
-    def date_search(self):
+    def date_search(self, date):
         # 打开高级筛选框
         self.click_advance_selector()
         self.early_late()
-
+        i = self.driver.find_element(By.XPATH, "//input[@id='search-post-date']")
+        i.clear()
+        i.send_keys(date)
         return self
 
+    @timer
+    # 点击搜索按钮，等待获取查询结果
     def get_search_result(self):
+
         # 点击搜索按钮
         self.driver.find_element(By.CSS_SELECTOR, ".btn-primary.search-cta").click()
         # 话题帖子，类别/标签，用户的搜索结果
@@ -184,18 +211,20 @@ class SearchAdvance:
                       "| //span[@class='username'] " \
                       "| //h3[text()='找不到结果。']" \
                       "| //div[text()='您的搜索词过短。']"
-        result_xpath1 = "//span[@class='topic-title' or @class='category-name' or @class='username'] " \
-                        "| //a[starts-with(@href,'/tag')] " \
-                        "| //h3[text()='找不到结果。']" \
-                        "| //div[text()='您的搜索词过短。']"
+        conditions = ["//span[@class='topic-title']",
+                      "//span[@class='category-name'] | //a[starts-with(@href,'/tag')]",
+                      "//span[@class='username']",
+                      "//h3[text()='找不到结果。']",
+                      "//div[text()='您的搜索词过短。']"]
         # self.web_driver_wait_xpath(result_path)
-        WebDriverWait(self.driver, 20).until(
+        result = WebDriverWait(self.driver, 20).until(
             expected_conditions.visibility_of_any_elements_located((By.XPATH, result_path)))
         for item in self.driver.find_elements(By.XPATH, result_path):
             self.search_result.append(item.text)
+        print("result", result)
+        print("search_result==", self.search_result)
         # 打印出的search_result列表会有空字符串
         # 例如['', '求助AppCrawler IOS XPATH中存在特殊属性@value=‘Password_#9; ’ 查找失败', '开源项目']
-        print("search_result", self.search_result)
         return self
 
     # 该方法已废弃
@@ -260,6 +289,6 @@ class SearchAdvance:
 
 
 if __name__ == '__main__':
-    lst = [1, 2, 3, 4, 5]
+    lst = []
     lst.clear()
-    print("=====", lst)
+    print("=====", bool(lst))
