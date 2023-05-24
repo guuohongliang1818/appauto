@@ -26,3 +26,7 @@ gitLab账号密码：807834167@qq.com，ghl627129
 问题处理：在caps中添加参数"settings[waitForIdleTimeout]"=0，当界面不停变化的时候，不要等界面处于空闲状态
         《本质上是：一个界面里面有一个线程不停地在运行，则另一个线程会尝试的去等待线程结束(即页面稳定之后)，再去进行下一步操作，要不然定位出来得到控件不稳定，可能会消失》
         settings[waitForIdleTimeout]该值默认为10秒，需要设置为0就可以了
+
+
+问题3：webview测试，上下文切换报错：No Chromedriver found that can automate Chrome '91.0.4472'
+处理：需要下载对应版本的chrome浏览器，地址为：https://registry.npmmirror.com/binary.html?path=chromedriver/
