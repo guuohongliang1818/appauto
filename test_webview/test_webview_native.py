@@ -1,10 +1,14 @@
 # 姓名：郭宏亮
 # 时间：2023/5/24 20:41
+import os.path
 from time import sleep
 
 from appium import webdriver
 from appium.webdriver.common.appiumby import AppiumBy
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+
+from test_webview import get_project
 
 
 class TestWebviewNative:
@@ -19,15 +23,10 @@ class TestWebviewNative:
         caps["appium:nativeWebScreenshot"] = True
         caps["appium:newCommandTimeout"] = 3600
         caps["appium:connectHardwareKeyboard"] = True
-        caps["chromedriverExecutableDir"] = "./"
+        # caps["chromedriverExecutableDir"] = os.path.join(get_project(), "bin")
+        caps["chromedriverExecutableDir"] = "D:/pythoncode/appauto/test_webview"
         self.driver = webdriver.Remote("http://127.0.0.1:4723/wd/hub", caps)
         self.driver.implicitly_wait(20)
-
-    # def teardown_class(self):
-    #     self.driver.close()
-
-    # 使用原生定位
-    def test1(self):
         self.driver.find_element(by=AppiumBy.XPATH,
                                  value="//android.widget.TextView[@content-desc='Views']").click()
         size = self.driver.get_window_size()
@@ -42,6 +41,12 @@ class TestWebviewNative:
         ele = WebDriverWait(self.driver, 10).until(swipe_to)
         print(ele)
         ele.click()
+
+    # def teardown_class(self):
+    #     self.driver.close()
+
+    # 使用原生定位
+    def test1(self):
         for i in range(5):
             sleep(1)
             print(self.driver.contexts)
@@ -54,20 +59,6 @@ class TestWebviewNative:
 
     # webview使用上下文切换
     def test2(self):
-        self.driver.find_element(by=AppiumBy.XPATH,
-                                 value="//android.widget.TextView[@content-desc='Views']").click()
-        size = self.driver.get_window_size()
-        width_max = size['width']
-        height_max = size['height']
-
-        def swipe_to(driver):
-            self.driver.swipe(width_max * 0.5, height_max * 0.8, width_max * 0.5, height_max * 0.2)
-            return self.driver.find_element(by=AppiumBy.XPATH,
-                                            value="//android.widget.TextView[@content-desc='WebView']")
-
-        ele = WebDriverWait(self.driver, 10).until(swipe_to)
-        print(ele)
-        ele.click()
         print("切换前", self.driver.page_source)
         print("contexts:", self.driver.contexts)
         WebDriverWait(self.driver, 10).until(lambda x: len(self.driver.contexts) == 2)
@@ -76,3 +67,9 @@ class TestWebviewNative:
         web_view = self.driver.contexts[-1]
         self.driver.switch_to.context(web_view)
         print("切换后", self.driver.page_source)
+        ele = self.driver.find_element(By.XPATH, "//input[@id='i_am_a_textbox']")
+        ele.clear()
+        ele.send_keys("ceshiren.com")
+
+
+

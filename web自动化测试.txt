@@ -12,6 +12,17 @@
 
 作业三：
 app端企业微信
+1.保留登录状态，noReset=False
+2.完成成员添加的po的测试用例
+3.会议，日程，通讯录
+
+
+
+
+
+
+
+
 
 gitLab账号密码：807834167@qq.com，ghl627129
 
@@ -29,4 +40,5 @@ gitLab账号密码：807834167@qq.com，ghl627129
 
 
 问题3：webview测试，上下文切换报错：No Chromedriver found that can automate Chrome '91.0.4472'
-处理：需要下载对应版本的chrome浏览器，地址为：https://registry.npmmirror.com/binary.html?path=chromedriver/
+处理：1.需要下载对应版本的chrome浏览器，地址为：https://registry.npmmirror.com/binary.html?path=chromedriver/
+     2.添加caps参数：chromedriverExecutableDir="chromedriver目录(该目录下可以配置多个，会自动匹配)"<注意该路径必须是绝对路径，windows是反斜杠，不能识别>
