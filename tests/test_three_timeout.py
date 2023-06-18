@@ -35,10 +35,11 @@ class TestThreeTimeout:
     def test_find_element(self):
         start = time()
         try:
-            print("==========", self.driver.title)
+            # print("==========", self.driver.title)
             # WebDriverWait(self.driver, 2).until(
             #     expected_conditions.visibility_of_element_located((By.XPATH, "//pp")))
-            self.driver.find_elements(By.XPATH, "//pp")
+            lst = self.driver.find_elements(By.XPATH, "//p")
+            print("lst", lst)
         except Exception as e:
             print("抛出异常", e)
         finally:
