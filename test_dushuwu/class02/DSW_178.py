@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 
 driver = webdriver.Chrome()
 driver.maximize_window()
+driver.get("http://novel.hctestedu.com")
 
 driver.find_element(By.XPATH, "//a[text()='登录']").click()
 
