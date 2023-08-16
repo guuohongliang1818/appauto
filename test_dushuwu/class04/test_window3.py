@@ -46,6 +46,12 @@ def test_confirm():
         # 全屏
         driver.fullscreen_window()
         sleep(2)
+        # 截屏
+        driver.save_screenshot("./image.png")
+
+        # 元素截图
+        ele = driver.find_element(By.XPATH, "//div[@id='mainNav']//a[text()='作家专区']")
+        ele.screenshot("./ele.png")
 
 
 if __name__ == '__main__':
