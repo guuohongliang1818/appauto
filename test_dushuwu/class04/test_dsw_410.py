@@ -110,9 +110,42 @@ def test_dsw_178():
 
     # 收费
     driver.find_element(By.XPATH, "//input[@value='1']").click()
-    # 点击提交
+    # 点击提交，创建章节成功
     driver.find_element(By.ID, "btnRegister").click()
-    sleep(2)
+
+    # 回到当前书籍的章节列表页面
+    # 获取当前书籍的所有章节列表
+    # 等待页面切换完成
+    wait.until(expected_conditions.element_to_be_clickable((By.XPATH, "//div[@id='hasContentDiv']//a[text()='新建章节']")))
+    chap_list = driver.find_elements(By.XPATH, "//tbody[@id='bookList']/tr")
+
+    for index, chap in enumerate(chap_list):
+        if chap_name in chap.text:
+            chap_search_index = index + 1
+            break
+    print("chap_search_index：", chap_search_index)
+    target_tr = driver.find_element(By.XPATH, f"//tbody[@id='bookList']/tr[{chap_search_index}]")
+    assert target_tr.find_element(By.XPATH, "//td[1]").text == chap_name
+    assert target_tr.find_element(By.XPATH, "//td[3]").text == "收费"
+
+    # 在当前页签回到网址首页
+    driver.get("http://novel.hctestedu.com")
+    driver.find_element(By.ID, "searchKey").send_keys(book_name)
+    driver.find_element(By.ID, "btnSearch").click()
+    # 获取下拉列表
+    wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//tbody[@id='bookList']/tr")))
+
+    list = driver.find_elements(By.XPATH, "//tbody[@id='bookList']/tr")
+
+    for index, tr in enumerate(list):
+        if book_name in tr.text and chap_name in tr.text:
+            idx = index + 1
+
+    print("idx：", idx)
+
+    target_a = driver.find_element(By.XPATH, f"//tbody[@id='bookList']/tr[{idx}]/td[3]/a")
+    target_a.click()
+
 
     # button = (By.XPATH, "//a[starts-with(text(),'章节管理')]")
     # 点击作家专区打开新页签
@@ -127,9 +160,7 @@ def test_dsw_178():
 
     # 非常重要结果检查，章节名称和是否收费
     # 检查阅读详情页： 可以重定向
-
     # 关闭浏览器
 
-
-if __name__ == '__main__':
-    pytest.main(['-v'])
+    if __name__ == '__main__':
+        pytest.main(['-v'])
