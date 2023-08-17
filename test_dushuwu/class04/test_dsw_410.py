@@ -162,5 +162,5 @@ def test_dsw_178():
     # 检查阅读详情页： 可以重定向
     # 关闭浏览器
 
-    if __name__ == '__main__':
-        pytest.main(['-v'])
+if __name__ == '__main__':
+    pytest.main(['-v'])
