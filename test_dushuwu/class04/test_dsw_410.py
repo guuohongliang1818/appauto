@@ -34,7 +34,7 @@ def test_dsw_178():
     # 用户名登录：
     username = "18894687777"
     passwd = "123456"
-    book_name = "三峰游泳完美"
+    book_name = "爱是大雾散尽时2"
     chap_name = "222222222数据库"
     chap_content = """
         RDBMS 术语
@@ -145,7 +145,18 @@ def test_dsw_178():
 
     target_a = driver.find_element(By.XPATH, f"//tbody[@id='bookList']/tr[{idx}]/td[3]/a")
     target_a.click()
+    sleep(2)
+    wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//h3[text()='最新章节']")))
+    ActionChains(driver) \
+        .move_to_element(driver.find_element(By.XPATH, f"//a[text()='{chap_name}']")) \
+        .perform()
+    driver.find_element(By.XPATH, f"//a[text()='{chap_name}']").click()
 
+    ActionChains(driver) \
+        .move_to_element(driver.find_element(By.XPATH, "//a[text()='购买']")) \
+        .perform()
+
+    assert driver.find_element(By.XPATH, "//h3[text()='此章为VIP章节，需要订阅后才能继续阅读']")
 
     # button = (By.XPATH, "//a[starts-with(text(),'章节管理')]")
     # 点击作家专区打开新页签
@@ -161,6 +172,7 @@ def test_dsw_178():
     # 非常重要结果检查，章节名称和是否收费
     # 检查阅读详情页： 可以重定向
     # 关闭浏览器
+
 
 if __name__ == '__main__':
     pytest.main(['-v'])
